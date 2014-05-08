@@ -133,7 +133,7 @@
     "automation_flickr_api_secret": "unset",
     "automation_slideshare_shared_secret": "unset",
     "automation_slideshare_api_key": "unset",
-    "automation_addendum_url": "http://www.sparc.arl.org/sites/default/files/Access-Reuse_Addendum.pdf",
+    "automation_addendum_url": "/custom/openaccess.cam.ac.uk/CambridgeScholarsAddendum_v1.0-1.docx",
 
     "oaeservice::limits::user_soft_max_files": "8192",
     "oaeservice::limits::user_hard_max_files": "32000"
