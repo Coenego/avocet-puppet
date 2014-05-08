@@ -1,0 +1,5 @@
+# Cron script for ClamAV.
+description "perform ClamAV scan"
+
+# Scan the specified folder(s)
+clamscan <%= files_dir %> -l <%= log_path %>

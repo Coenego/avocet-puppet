@@ -77,7 +77,11 @@ class hilary (
 
     # Etherpad
     $config_etherpad_internal_hosts,
-    $config_etherpad_api_key,) {
+    $config_etherpad_api_key,
+
+    ## ClamAV
+    $config_clamav_enabled = true,
+    $config_clamav_log_path = '/var/log/clamav.log') {
 
   $config_files_tmp_upload_dir = "${config_files_tmp_dir}/uploads"
   $config_previews_tmp_dir = "${config_files_tmp_dir}/previews"
@@ -138,7 +142,12 @@ class hilary (
       require => [ File[$upload_files_dir], File[$config_files_tmp_dir], File[$config_files_tmp_upload_dir] ]
   }
 
-
+  if $config_clamav_enabled {
+    class { '::hilary::antivirus':
+       scan_directory   => $upload_files_dir,
+       log_path         => $config_clamav_log_path
+    }
+  }
 
   ###################
   ## CONFIGURATION ##
