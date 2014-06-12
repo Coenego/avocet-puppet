@@ -54,34 +54,37 @@ service nginx restart
 # Create an 'oae' tenant.
 echo ""
 echo "Creating an 'oae' tenant and disabling reCaptcha"
-ADMIN_COOKIE=$(curl -s -e "/" --cookie-jar - -d"username=administrator" -d"password=administrator" http://<%= admin_host %>/api/auth/login | grep connect.sess | cut -f 7)
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "alias=cam" -d"displayName=Cambridge" -d"host=ec2-54-73-99-234.eu-west-1.compute.amazonaws.com" http://<%= admin_host %>/api/tenant/create
+ADMIN_COOKIE_SESS=$(curl -s -e "/" --cookie-jar - -d "username=administrator" -d "password=administrator" http://<%= admin_host %>/api/auth/login | grep express:sess | cut -f 7)
+ADMIN_COOKIE_SESS_SIG=$(curl -s -e "/" --cookie-jar - -d "username=administrator" -d "password=administrator" http://<%= admin_host %>/api/auth/login | grep express:sess.sig | cut -f 7)
+
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "alias=cam" -d"displayName=Cambridge" -d"host=ec2-54-73-99-234.eu-west-1.compute.amazonaws.com" http://<%= admin_host %>/api/tenant/create
 
 # Disable reCaptcha
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "oae-principals/recaptcha/enabled=false" http://<%= admin_host %>/api/config/cam
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "oae-principals/recaptcha/enabled=false" http://<%= admin_host %>/api/config/cam
 
 if [ "<%= flickr_api_key %>" != "unset" ] ; then
     # Configuring the Flickr and SlideShare Preview Processor
-    curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d"oae-preview-processor/flickr/apikey=<%=flickr_api_key %>" -d"oae-preview-processor/flickr/apisecret=<%=flickr_api_secret %>" -d"oae-preview-processor/slideshare/sharedsecret=<%=slideshare_shared_secret %>" -d"oae-preview-processor/slideshare/apikey=<%= slideshare_api_key %>" http://<%= admin_host %>/api/config
+    curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d"oae-preview-processor/flickr/apikey=<%=flickr_api_key %>" -d"oae-preview-processor/flickr/apisecret=<%=flickr_api_secret %>" -d"oae-preview-processor/slideshare/sharedsecret=<%=slideshare_shared_secret %>" -d"oae-preview-processor/slideshare/apikey=<%= slideshare_api_key %>" http://<%= admin_host %>/api/config
 fi
 
 # Enable uploading publications
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "oae-publications/publications/allowUserEntry=true" http://<%= admin_host %>/api/config/cam
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "oae-publications/publications/allowUserEntry=true" http://<%= admin_host %>/api/config/cam
 
 # Disable local strategy
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "oae-authentication/local/allowAccountCreation=false" -d "oae-authentication/local/enabled=false" http://<%= admin_host %>/api/config/cam
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "oae-authentication/local/allowAccountCreation=false" -d "oae-authentication/local/enabled=false" http://<%= admin_host %>/api/config/cam
 
 # Disable Twitter strategy
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "oae-authentication/twitter/enabled=false" http://<%= admin_host %>/api/config/cam
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "oae-authentication/twitter/enabled=false" http://<%= admin_host %>/api/config/cam
 
 # Enable the Google strategy
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "oae-authentication/google/enabled=true" -d"oae-authentication/google/key=832766182042-er6qqh5nqitn30oqrtad7mvgcadl6dcr.apps.googleusercontent.com" -d"oae-authentication/google/secret=MKo6exTvIM8_tiJDt1t4zYWz" http://<%= admin_host %>/api/config/cam
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "oae-authentication/google/enabled=true" -d"oae-authentication/google/key=832766182042-er6qqh5nqitn30oqrtad7mvgcadl6dcr.apps.googleusercontent.com" -d"oae-authentication/google/secret=MKo6exTvIM8_tiJDt1t4zYWz" http://<%= admin_host %>/api/config/cam
 
 # Upload the departments
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -F "departments=@/opt/scripts/departments.csv" -F"tenantAlias=cam" http://admin.dev0.avocet.cam.ac.uk/api/departments/import
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -F "departments=@/opt/scripts/departments.csv" -F"tenantAlias=cam" http://admin.dev0.avocet.cam.ac.uk/api/departments/import
 
 # Upload the journals
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -F"journals=@/opt/scripts/journals.csv" http://admin.dev0.avocet.cam.ac.uk/api/journals/import
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -F"journals=@/opt/scripts/journals.csv" http://admin.dev0.avocet.cam.ac.uk/api/journals/import
 
 # Set the addendum download url
-curl --cookie connect.sess=${ADMIN_COOKIE} -e "/" -d "oae-tickets/general/addendumUrl=<%= addendum_url %>" http://<%= admin_host %>/api/config/cam
+curl --cookie "express:sess=${ADMIN_COOKIE_SESS};express:sess.sig=${ADMIN_COOKIE_SESS_SIG}" -e "/" -d "oae-tickets/general/addendumUrl=<%= addendum_url %>" http://<%= admin_host %>/api/config/cam
+
