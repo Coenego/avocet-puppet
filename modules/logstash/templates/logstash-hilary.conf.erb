@@ -7,5 +7,8 @@ input {
 }
 
 output {
-    elasticsearch { host => localhost }
+    elasticsearch {
+        host => localhost
+        protocol => http
+    }
 }

@@ -5,7 +5,7 @@ class nginx (
     $app_admin_tenant               = 'admin',
     $app_stats_tenant               = 'stats',
     $app_ui_path                    = '/opt/3akai-ux',
-    $stats_ui_dir                   = '/opt/stats',
+    $stats_dir                      = '/opt/stats',
     $files_home                     = '/opt/files',
     $owner                          = 'nginx',
     $group                          = 'nginx',

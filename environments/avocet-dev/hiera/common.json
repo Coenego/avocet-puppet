@@ -5,9 +5,7 @@
         "::oaeservice::firewall::ssh",
         "::oaeservice::firewall::web",
         "::oaeservice::hosts",
-        "::oaeservice::kibana",
         "::oaeservice::limits",
-        "::oaeservice::logstash",
         "::oaeservice::ssh",
         "::oaeservice::users::admin",
         "::oaeservice::users::deploy"
@@ -51,11 +49,12 @@
         "revision": "master"
     },
 
-    "stats_ui_dir": "/opt/stats",
-    "stats_install_method": "git",
+    "stats_dir": "/opt/stats",
+    "stats_install_method": "archive",
     "stats_install_config": {
-        "source": "https://github.com/elasticsearch/kibana.git",
-        "revision": "master"
+        "url_base": "https://download.elasticsearch.org/kibana/kibana",
+        "url_extension": "tar.gz",
+        "version_major_minor": "4.0.0-BETA1.1"
     },
 
     "db_cluster_name": "Avocet QA Cluster",
